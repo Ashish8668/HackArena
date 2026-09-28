@@ -68,7 +68,7 @@ function failReason(key) {
   if (key === 'age') return 'Patient age is outside the trial age range.'
   if (key === 'gender') return 'Patient gender does not match the trial gender requirement.'
   if (key === 'condition') {
-    return 'Condition terminology similarity is below the technical threshold. This threshold is not medically validated.'
+    return 'Condition similarity is below the threshold.'
   }
   if (key === 'hba1c') return "Patient HbA1c exceeds the trial's maximum allowed value."
   if (key === 'bmi') return 'Patient BMI is outside the trial BMI range.'

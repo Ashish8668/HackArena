@@ -38,7 +38,6 @@ export default function CriterionRow({ name, result, expanded }) {
           {result.semantic_similarity !== undefined ? (
             <p>
               Semantic similarity: <span className="font-medium">{result.semantic_similarity}</span>
-              <span className="ml-1 text-xs text-slate-400">(technical threshold only)</span>
             </p>
           ) : null}
           {result.reason ? <p className="md:col-span-2">Reason: {result.reason}</p> : null}

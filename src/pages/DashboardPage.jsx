@@ -26,7 +26,6 @@ export default function DashboardPage() {
       .catch((err) => setError(err.message))
   }, [])
 
-  const registeredCount = patients.filter((item) => item.source === 'self').length
   const potentialMatches = matches.filter((item) => item.eligible).length
   const nearEligiblePatients = new Set(matches.filter((item) => item.near_eligible).map((item) => item.patient_id)).size
   const contacted = recruitment.filter((item) => item.status === 'Contacted').length
@@ -49,18 +48,15 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Coordinator dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Patients register themselves. You review potential matches, explain criteria, contact people, then screen and enroll. Nothing here is a final medical eligibility decision.
-        </p>
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
       </div>
 
       {error ? <p className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p> : null}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <StatCard label="Total patients" value={patients.length} hint={`${registeredCount} self-registered`} />
-        <StatCard label="Potential matches" value={potentialMatches} hint="Structured criteria currently pass" />
-        <StatCard label="Near-eligible patients" value={nearEligiblePatients} hint="Close numeric miss — still not eligible" />
+        <StatCard label="Patients" value={patients.length} />
+        <StatCard label="Potential matches" value={potentialMatches} />
+        <StatCard label="Near matches" value={nearEligiblePatients} />
         <StatCard label="Contacted" value={contacted} />
         <StatCard label="Screened" value={screened} />
         <StatCard label="Enrolled" value={enrolled} />
@@ -68,7 +64,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-6 xl:grid-cols-5">
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
-          <h2 className="font-semibold">Recruitment pipeline</h2>
+          <h2 className="font-semibold">Pipeline</h2>
           <div className="mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
@@ -84,9 +80,9 @@ export default function DashboardPage() {
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold">Pipeline by trial</h2>
+            <h2 className="font-semibold">By trial</h2>
             <Link to="/settings" className="text-sm text-teal-700">
-              Seed demo trials
+              Data
             </Link>
           </div>
           <div className="mt-4 overflow-x-auto">
@@ -116,7 +112,7 @@ export default function DashboardPage() {
                 {!pipeline.length ? (
                   <tr>
                     <td colSpan={5} className="py-6 text-slate-500">
-                      No trials yet. Seed demo trials from Data Setup so patients can be matched.
+                      No trials.
                     </td>
                   </tr>
                 ) : null}

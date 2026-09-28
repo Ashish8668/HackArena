@@ -16,7 +16,7 @@ export default function LoginPage() {
     event.preventDefault()
     setError('')
     if (!configured) {
-      setError('Firebase is not configured. Add keys to a .env file from .env.example.')
+      setError('Configuration missing.')
       return
     }
     setBusy(true)
@@ -24,7 +24,7 @@ export default function LoginPage() {
       const nextProfile = await login(email, password)
       navigate(homePathForRole(nextProfile?.role))
     } catch (err) {
-      setError(err.message || 'Unable to sign in.')
+      setError(err.code === 'auth/invalid-credential' ? 'Unable to sign in.' : err.message || 'Unable to sign in.')
     } finally {
       setBusy(false)
     }
@@ -36,9 +36,8 @@ export default function LoginPage() {
         <Link to="/" className="text-center text-sm font-semibold uppercase tracking-[0.18em] text-stone-800">
           Clinical Match
         </Link>
-        <div className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-stone-200">
+        <div className="rounded-[1.5rem] bg-white p-8 ring-1 ring-stone-200">
           <h1 className="font-serif text-3xl">Sign in</h1>
-          <p className="mt-2 text-sm text-stone-500">Participants go to their matches. Coordinators go to the workspace.</p>
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <Field label="Email">
               <input className={inputClass} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -52,13 +51,12 @@ export default function LoginPage() {
               disabled={busy}
               className="w-full rounded-full bg-stone-900 py-2.5 text-sm font-medium text-white hover:bg-stone-800 disabled:opacity-60"
             >
-              {busy ? 'Signing in...' : 'Login'}
+              {busy ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
           <p className="mt-5 text-sm text-stone-600">
-            New here?{' '}
-            <Link to="/signup" className="font-medium text-[#c45c26]">
-              Create an account
+            <Link to="/signup" className="font-medium text-stone-900">
+              Register
             </Link>
           </p>
         </div>

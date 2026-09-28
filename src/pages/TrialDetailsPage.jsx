@@ -20,7 +20,7 @@ export default function TrialDetailsPage() {
   return (
     <div className="space-y-6">
       <Link to="/trials" className="text-sm text-teal-700">
-        Back to trials
+        Back
       </Link>
       <div>
         <h1 className="text-2xl font-semibold">{trial.title}</h1>
@@ -60,7 +60,7 @@ export default function TrialDetailsPage() {
               <StatusBadge value={overallLabel(match)} />
             </div>
           ))}
-          {!matches.length ? <p className="text-sm text-slate-500">No saved matches yet.</p> : null}
+          {!matches.length ? <p className="text-sm text-slate-500">No matches.</p> : null}
         </div>
       </section>
     </div>

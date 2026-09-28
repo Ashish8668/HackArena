@@ -1,14 +1,14 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Activity, ClipboardList, HeartPulse, LayoutDashboard, LogOut, Search, Settings, Users, Workflow } from 'lucide-react'
+import { Activity, ClipboardList, LayoutDashboard, LogOut, Search, Settings, Users, Workflow } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/patients', label: 'Participants', icon: Users },
   { to: '/trials', label: 'Trials', icon: ClipboardList },
-  { to: '/search', label: 'Trial Search', icon: Search },
+  { to: '/search', label: 'Search', icon: Search },
   { to: '/recruitment', label: 'Recruitment', icon: Workflow },
-  { to: '/settings', label: 'Data Setup', icon: Settings },
+  { to: '/settings', label: 'Data', icon: Settings },
 ]
 
 export default function AppLayout() {
@@ -28,10 +28,7 @@ export default function AppLayout() {
             <Activity className="h-6 w-6" />
             <span className="text-sm font-semibold tracking-wide">CLINICAL MATCH</span>
           </div>
-          <h1 className="mt-3 text-lg font-semibold leading-snug">Coordinator workspace</h1>
-          <p className="mt-2 text-xs text-slate-400">
-            Review self-registered participants. This is not a diagnostic or eligibility decision system.
-          </p>
+          <h1 className="mt-3 text-lg font-semibold">Coordinator</h1>
         </div>
         <nav className="flex-1 space-y-1 px-3 py-4">
           {links.map((link) => {
@@ -99,7 +96,7 @@ export default function AppLayout() {
 }
 
 export function PatientLayout() {
-  const { user, profile, logout } = useAuth()
+  const { logout } = useAuth()
   const navigate = useNavigate()
 
   async function handleLogout() {
@@ -108,8 +105,8 @@ export function PatientLayout() {
   }
 
   const links = [
-    { to: '/app', label: 'My matches', icon: HeartPulse },
-    { to: '/app/profile', label: 'My profile', icon: Users },
+    { to: '/app', label: 'Matches' },
+    { to: '/app/profile', label: 'Profile' },
   ]
 
   return (
@@ -120,7 +117,6 @@ export function PatientLayout() {
             <Activity className="h-5 w-5" />
             <div>
               <p className="text-sm font-semibold">Clinical Match</p>
-              <p className="text-xs text-slate-500">Patient portal</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -143,9 +139,6 @@ export function PatientLayout() {
         </div>
       </header>
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <p className="mb-6 rounded-xl border border-teal-100 bg-white px-4 py-3 text-sm text-slate-600">
-          Signed in as {profile?.name || user?.email}. Potential matches are not a medical eligibility decision. A coordinator still reviews every criterion and contacts you if a screening visit is appropriate.
-        </p>
         <Outlet />
       </main>
     </div>

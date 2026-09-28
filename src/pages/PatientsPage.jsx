@@ -46,10 +46,7 @@ export default function PatientsPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Registered participants</h1>
-          <p className="text-sm text-slate-500">
-            {patients.length} profiles. Self-registered patients appear here after they complete their own information.
-          </p>
+          <h1 className="text-2xl font-semibold">Participants</h1>
         </div>
         <button
           type="button"
@@ -66,7 +63,7 @@ export default function PatientsPage() {
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search patients"
+        placeholder="Search"
         className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm md:max-w-md"
       />
 
@@ -95,7 +92,7 @@ export default function PatientsPage() {
                 </td>
                 <td className="px-4 py-3">{patient.name || '—'}</td>
                 <td className="px-4 py-3">{patient.email || '—'}</td>
-                <td className="px-4 py-3">{patient.source === 'self' ? 'Self-registered' : 'Demo / added'}</td>
+                <td className="px-4 py-3">{patient.source === 'self' ? 'Registered' : 'Added'}</td>
                 <td className="px-4 py-3">{patient.age}</td>
                 <td className="px-4 py-3">{patient.condition}</td>
                 <td className="px-4 py-3">

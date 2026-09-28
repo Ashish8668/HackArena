@@ -8,7 +8,7 @@ import StatusBadge from '../components/StatusBadge'
 import { warmupEmbeddingModel } from '../semantic/embeddingService'
 
 export default function TrialSearchPage() {
-  const [query, setQuery] = useState('Find diabetes trials for middle-aged patients with controlled blood sugar.')
+  const [query, setQuery] = useState('')
   const [trials, setTrials] = useState([])
   const [patients, setPatients] = useState([])
   const [results, setResults] = useState([])
@@ -49,12 +49,7 @@ export default function TrialSearchPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Natural language trial search</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Semantic retrieval ranks trials. It does not declare a patient eligible. Run the structured engine after selecting a patient.
-        </p>
-      </div>
+      <h1 className="text-2xl font-semibold">Search</h1>
 
       <form className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" onSubmit={handleSearch}>
         <textarea
@@ -65,7 +60,7 @@ export default function TrialSearchPage() {
         />
         <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center">
           <label className="text-sm text-slate-600">
-            Patient for eligibility check
+            Patient
             <select
               className="ml-2 rounded-lg border border-slate-300 px-3 py-2 text-sm"
               value={patientId}
@@ -79,7 +74,7 @@ export default function TrialSearchPage() {
             </select>
           </label>
           <button type="submit" disabled={busy} className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white">
-            {busy ? 'Searching...' : 'Search trials'}
+            {busy ? 'Searching...' : 'Search'}
           </button>
         </div>
       </form>
@@ -92,7 +87,7 @@ export default function TrialSearchPage() {
               <div>
                 <h2 className="font-semibold">{trial.title}</h2>
                 <p className="text-sm text-slate-500">
-                  {trial.trial_id} · {trial.condition} · technical similarity {trial.search_similarity}
+                  {trial.trial_id} · {trial.condition}
                 </p>
               </div>
               <button
@@ -100,7 +95,7 @@ export default function TrialSearchPage() {
                 className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
                 onClick={() => runEligibility(trial)}
               >
-                Run eligibility engine
+                Match
               </button>
             </div>
           </article>
@@ -111,15 +106,12 @@ export default function TrialSearchPage() {
         <section className="rounded-2xl border border-teal-200 bg-teal-50 p-5">
           <div className="flex items-center justify-between gap-3">
             <h2 className="font-semibold">
-              Structured result for {patientId} / {eligibility.trial.trial_id}
+              {patientId} / {eligibility.trial.trial_id}
             </h2>
             <StatusBadge value={overallLabel(eligibility.match)} />
           </div>
-          <p className="mt-2 text-sm text-slate-600">
-            Semantic search only retrieved this trial. The structured engine then reports a potential match, near match, or not a match. It is not a medical eligibility decision.
-          </p>
           <Link className="mt-3 inline-block text-sm text-teal-800" to={`/patients/${patientId}`}>
-            Open patient details
+            Patient
           </Link>
         </section>
       ) : null}

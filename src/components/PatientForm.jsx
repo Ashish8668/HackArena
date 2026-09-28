@@ -45,7 +45,7 @@ export default function PatientForm({ initialValue, onSubmit, submitLabel, lockI
           <input className={inputClass} value={values.patient_id} disabled={lockId} onChange={(e) => update('patient_id', e.target.value)} />
         </Field>
       ) : null}
-      <Field label="Full name" error={errors.name}>
+      <Field label="Name" error={errors.name}>
         <input className={inputClass} value={values.name || ''} onChange={(e) => update('name', e.target.value)} />
       </Field>
       <Field label="Email" error={errors.email}>
@@ -80,9 +80,6 @@ export default function PatientForm({ initialValue, onSubmit, submitLabel, lockI
         <input className={inputClass} value={values.current_medicine} onChange={(e) => update('current_medicine', e.target.value)} />
       </Field>
       <div className="md:col-span-2">
-        <p className="mb-3 text-xs text-slate-500">
-          Name and email are for identity and communication only. Matching uses age, gender, condition, HbA1c, BMI, and current medicine.
-        </p>
         <button type="submit" className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800">
           {submitLabel}
         </button>

@@ -8,7 +8,7 @@ import { listMatchesForPatient } from '../firebase/matches'
 import { getRecruitment, upsertRecruitment } from '../firebase/recruitment'
 import { overallLabel } from '../matching/eligibilityEngine'
 import { RECRUITMENT_STATUSES } from '../matching/config'
-import { getEmbeddingModelStatus, warmupEmbeddingModel } from '../semantic/embeddingService'
+import { warmupEmbeddingModel } from '../semantic/embeddingService'
 import { contactPatientMailto, runAndPersistMatching } from '../services/runMatching'
 
 export default function PatientDetailsPage() {
@@ -18,7 +18,6 @@ export default function PatientDetailsPage() {
   const [expanded, setExpanded] = useState({})
   const [recruitment, setRecruitment] = useState({})
   const [busy, setBusy] = useState(false)
-  const [modelStatus, setModelStatus] = useState('idle')
   const [error, setError] = useState('')
 
   async function loadMatches(nextPatient) {
@@ -41,7 +40,7 @@ export default function PatientDetailsPage() {
         if (nextPatient) await loadMatches(nextPatient)
       })
       .catch((err) => setError(err.message))
-    warmupEmbeddingModel().finally(() => setModelStatus(getEmbeddingModelStatus()))
+    warmupEmbeddingModel()
   }, [patientId])
 
   async function findMatches() {
@@ -49,7 +48,6 @@ export default function PatientDetailsPage() {
     setError('')
     try {
       await warmupEmbeddingModel()
-      setModelStatus(getEmbeddingModelStatus())
       const results = await runAndPersistMatching(patient)
       setMatches(results)
       const nextRecruitment = {}
@@ -79,22 +77,22 @@ export default function PatientDetailsPage() {
   return (
     <div className="space-y-6">
       <Link to="/patients" className="text-sm text-teal-700">
-        Back to participants
+        Back
       </Link>
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{patient.name || patient.patient_id}</h1>
           <p className="mt-1 text-slate-500">
             {patient.patient_id} · {patient.condition}
-            {patient.source === 'self' ? ' · self-registered' : ''}
+            {patient.source === 'self' ? ' · Registered' : ''}
           </p>
-          <p className="mt-1 text-sm text-slate-500">{patient.email || 'No email on file'}</p>
+          <p className="mt-1 text-sm text-slate-500">{patient.email || '—'}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {mailHref ? (
             <a href={mailHref} className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium">
               <Mail className="h-4 w-4" />
-              Email patient
+              Email
             </a>
           ) : null}
           <button
@@ -124,9 +122,6 @@ export default function PatientDetailsPage() {
         ))}
       </div>
 
-      <p className="text-xs text-slate-500">
-        Semantic model status: {modelStatus}. A potential match is not medical eligibility. Final screening stays with the study team.
-      </p>
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
       <div className="space-y-4">
@@ -149,9 +144,7 @@ export default function PatientDetailsPage() {
                 </div>
               </div>
               {match.near_eligible ? (
-                <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
-                  Near match is not eligible. Review the failed numeric criterion before contacting the patient.
-                </p>
+                <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">Near match</p>
               ) : null}
               <div className="mt-4">
                 {Object.entries(match.criteria_results || {}).map(([name, result]) => (
@@ -169,12 +162,12 @@ export default function PatientDetailsPage() {
                   className="text-sm font-medium text-teal-700"
                   onClick={() => setExpanded((current) => ({ ...current, [match.trial_id]: !current[match.trial_id] }))}
                 >
-                  {expanded[match.trial_id] ? 'Hide explanation' : 'View explanation'}
+                  {expanded[match.trial_id] ? 'Hide' : 'Details'}
                 </button>
                 <div className="flex flex-wrap items-center gap-2">
                   {trialMail ? (
                     <a href={trialMail} className="text-sm text-teal-700">
-                      Email about this study
+                      Email
                     </a>
                   ) : null}
                   <span className="text-sm text-slate-500">Recruitment</span>

@@ -44,7 +44,6 @@ export default function TrialsPage() {
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Trials</h1>
-          <p className="text-sm text-slate-500">{trials.length} protocol records</p>
         </div>
         <button
           type="button"
@@ -61,7 +60,7 @@ export default function TrialsPage() {
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search trials"
+        placeholder="Search"
         className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm md:max-w-md"
       />
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}

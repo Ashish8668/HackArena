@@ -31,9 +31,7 @@ export function contactPatientMailto(patient, trial) {
   if (!email) return null
   const name = patient.name || patient.patient_id
   const trialTitle = trial?.title || 'a research study'
-  const subject = encodeURIComponent(`Possible clinical trial screening: ${trialTitle}`)
-  const body = encodeURIComponent(
-    `Hello ${name},\n\nA research coordinator would like to discuss a possible screening visit for ${trialTitle}. This message is not a confirmation of medical eligibility. A coordinator and the study team still need to review your information.\n\nThank you,\nClinical research coordinator\n`,
-  )
+  const subject = encodeURIComponent(`Clinical trial: ${trialTitle}`)
+  const body = encodeURIComponent(`Hello ${name},\n\nRegarding ${trialTitle}.\n`)
   return `mailto:${email}?subject=${subject}&body=${body}`
 }

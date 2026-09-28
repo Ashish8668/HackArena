@@ -31,7 +31,7 @@ export default function PatientProfilePage() {
       }
       await upsertPatient(record)
       await runAndPersistMatching(record)
-      setMessage('Profile saved. Potential matches were refreshed for coordinator review.')
+      setMessage('Saved.')
       navigate('/app')
     } catch (error) {
       setMessage(error.message)
@@ -42,10 +42,7 @@ export default function PatientProfilePage() {
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h1 className="text-2xl font-semibold">Your clinical profile</h1>
-      <p className="mt-2 text-sm text-slate-600">
-        You enter this information yourself so a coordinator does not have to retype it. Saving the profile automatically checks listed studies. Results are potential matches only.
-      </p>
+      <h1 className="text-2xl font-semibold">Profile</h1>
       <div className="mt-6">
         <PatientForm
           key={patient?.patient_id || user?.uid || 'profile'}
@@ -60,7 +57,7 @@ export default function PatientProfilePage() {
             bmi: patient?.bmi || '',
             current_medicine: patient?.current_medicine || '',
           }}
-          submitLabel={busy ? 'Saving and matching...' : 'Save profile and find possible studies'}
+          submitLabel={busy ? 'Saving...' : 'Save'}
           onSubmit={handleSave}
         />
       </div>

@@ -2,7 +2,7 @@ export function validatePatient(values, options = {}) {
   const errors = {}
   if (options.requireContact) {
     if (!values.name?.trim()) errors.name = 'Name is required.'
-    if (!values.email?.trim()) errors.email = 'Email is required for coordinator communication.'
+    if (!values.email?.trim()) errors.email = 'Email is required.'
   }
   if (!options.hidePatientId && !values.patient_id?.trim()) errors.patient_id = 'Patient ID is required.'
   if (values.age === '' || values.age === null || Number.isNaN(Number(values.age))) {
@@ -45,7 +45,7 @@ export function validateTrial(values) {
   if (!errors.min_bmi && !errors.max_bmi && minBmi > maxBmi) {
     errors.max_bmi = 'Maximum BMI must be greater than or equal to minimum BMI.'
   }
-  if (!values.excluded_medicine?.trim()) errors.excluded_medicine = 'Excluded medicine is required. Use None if not applicable.'
+  if (!values.excluded_medicine?.trim()) errors.excluded_medicine = 'Excluded medicine is required.'
   return errors
 }
 

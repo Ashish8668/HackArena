@@ -44,10 +44,7 @@ export default function RecruitmentPage() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-semibold">Recruitment tracking</h1>
-        <p className="text-sm text-slate-500">Move a self-registered or demo participant from identified to enrolled for each trial.</p>
-      </div>
+      <h1 className="text-2xl font-semibold">Recruitment</h1>
       <select
         className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
         value={statusFilter}
@@ -115,7 +112,7 @@ export default function RecruitmentPage() {
             {!filtered.length ? (
               <tr>
                 <td colSpan={5} className="px-4 py-6 text-slate-500">
-                  No recruitment records yet. They appear when a patient profile is matched to a study.
+                  No records.
                 </td>
               </tr>
             ) : null}

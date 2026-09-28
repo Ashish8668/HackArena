@@ -10,7 +10,7 @@ export default function ProtectedRoute() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f4efe6] text-stone-600">
-        Checking session...
+        Loading...
       </div>
     )
   }

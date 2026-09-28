@@ -1,13 +1,7 @@
 const styles = {
-  ELIGIBLE: 'bg-emerald-100 text-emerald-800',
   'POTENTIAL MATCH': 'bg-emerald-100 text-emerald-800',
-  'Potential Match': 'bg-emerald-100 text-emerald-800',
-  'NEAR ELIGIBLE': 'bg-amber-100 text-amber-800',
   'NEAR MATCH': 'bg-amber-100 text-amber-800',
-  'Close possible match': 'bg-amber-100 text-amber-800',
-  'NOT ELIGIBLE': 'bg-rose-100 text-rose-800',
   'NOT A MATCH': 'bg-rose-100 text-rose-800',
-  'Not a current match': 'bg-rose-100 text-rose-800',
   PASS: 'bg-emerald-100 text-emerald-800',
   FAIL: 'bg-rose-100 text-rose-700',
   Identified: 'bg-sky-100 text-sky-800',
