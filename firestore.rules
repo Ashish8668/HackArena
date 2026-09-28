@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isCoordinator() {
+      return isSignedIn() && userData().role == 'coordinator';
+    }
+
+    function isPatient() {
+      return isSignedIn() && userData().role == 'patient';
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isCoordinator());
+      allow create, update: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /patients/{patientId} {
+      allow read: if isCoordinator() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isCoordinator() || (isPatient() && request.resource.data.uid == request.auth.uid);
+      allow update: if isCoordinator() || (isPatient() && resource.data.uid == request.auth.uid);
+      allow delete: if isCoordinator();
+    }
+
+    match /trials/{trialId} {
+      allow read: if isSignedIn();
+      allow write: if isCoordinator();
+    }
+
+    match /matches/{matchId} {
+      allow read: if isCoordinator() || (isSignedIn() && resource.data.patient_id == userData().patient_id);
+      allow create, update: if isCoordinator() || (isPatient() && request.resource.data.patient_id == userData().patient_id);
+      allow delete: if isCoordinator();
+    }
+
+    match /recruitment/{docId} {
+      allow read: if isCoordinator() || (isSignedIn() && resource.data.patient_id == userData().patient_id);
+      allow write: if isCoordinator() || (isPatient() && request.resource.data.status == 'Identified' && request.resource.data.patient_id == userData().patient_id);
+    }
+  }
+}
