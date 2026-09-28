@@ -7,23 +7,21 @@ export async function runAndPersistMatching(patient) {
   const trials = await listTrials()
   const results = await matchPatientToTrials(patient, trials)
   await saveMatches(results)
-
-  await Promise.all(
-    results
-      .filter((match) => match.eligible || match.near_eligible)
-      .map(async (match) => {
-        const existing = await getRecruitment(match.patient_id, match.trial_id)
-        if (!existing) {
-          await upsertRecruitment({
-            patient_id: match.patient_id,
-            trial_id: match.trial_id,
-            status: 'Identified',
-          })
-        }
-      }),
-  )
-
   return results
+}
+
+export async function applyToTrial(patient, trialId) {
+  const existing = await getRecruitment(patient.patient_id, trialId)
+  if (existing && existing.status !== 'Applied') {
+    throw new Error('Already in process.')
+  }
+  if (existing?.status === 'Applied') return existing
+  await upsertRecruitment({
+    patient_id: patient.patient_id,
+    trial_id: trialId,
+    status: 'Applied',
+  })
+  return { patient_id: patient.patient_id, trial_id: trialId, status: 'Applied' }
 }
 
 export function contactPatientMailto(patient, trial) {

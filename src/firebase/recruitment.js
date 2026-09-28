@@ -29,6 +29,11 @@ export async function listRecruitmentForPatient(patientId) {
   return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
 }
 
+export async function listRecruitmentForTrial(trialId) {
+  const snapshot = await getDocs(query(collection(db, COLLECTION), where('trial_id', '==', trialId)))
+  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
+}
+
 export async function upsertRecruitment({ patient_id, trial_id, status }) {
   await setDoc(doc(db, COLLECTION, matchDocumentId(patient_id, trial_id)), {
     patient_id,
@@ -36,4 +41,16 @@ export async function upsertRecruitment({ patient_id, trial_id, status }) {
     status,
     updatedAt: serverTimestamp(),
   })
+}
+
+export async function identifyApplicants(trialId, patientIds) {
+  await Promise.all(
+    patientIds.map((patient_id) =>
+      upsertRecruitment({
+        patient_id,
+        trial_id: trialId,
+        status: 'Identified',
+      }),
+    ),
+  )
 }

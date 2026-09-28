@@ -1,12 +1,11 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Activity, ClipboardList, LayoutDashboard, LogOut, Search, Settings, Users, Workflow } from 'lucide-react'
+import { Activity, ClipboardList, LayoutDashboard, LogOut, Settings, Users, Workflow } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/patients', label: 'Participants', icon: Users },
   { to: '/trials', label: 'Trials', icon: ClipboardList },
-  { to: '/search', label: 'Search', icon: Search },
   { to: '/recruitment', label: 'Recruitment', icon: Workflow },
   { to: '/settings', label: 'Data', icon: Settings },
 ]

@@ -9,7 +9,6 @@ import PatientsPage from './pages/PatientsPage'
 import PatientDetailsPage from './pages/PatientDetailsPage'
 import TrialsPage from './pages/TrialsPage'
 import TrialDetailsPage from './pages/TrialDetailsPage'
-import TrialSearchPage from './pages/TrialSearchPage'
 import RecruitmentPage from './pages/RecruitmentPage'
 import SettingsPage from './pages/SettingsPage'
 import PatientHomePage from './pages/patient/PatientHomePage'
@@ -61,7 +60,6 @@ export default function App() {
             <Route path="/patients/:patientId" element={<PatientDetailsPage />} />
             <Route path="/trials" element={<TrialsPage />} />
             <Route path="/trials/:trialId" element={<TrialDetailsPage />} />
-            <Route path="/search" element={<TrialSearchPage />} />
             <Route path="/recruitment" element={<RecruitmentPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>

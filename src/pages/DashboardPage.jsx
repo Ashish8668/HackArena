@@ -1,126 +1,154 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import StatCard from '../components/StatCard'
+import StatusBadge from '../components/StatusBadge'
 import { listPatients } from '../firebase/patients'
 import { listTrials } from '../firebase/trials'
-import { listMatches } from '../firebase/matches'
 import { listRecruitment } from '../firebase/recruitment'
 import { RECRUITMENT_STATUSES } from '../matching/config'
 
 export default function DashboardPage() {
   const [patients, setPatients] = useState([])
   const [trials, setTrials] = useState([])
-  const [matches, setMatches] = useState([])
   const [recruitment, setRecruitment] = useState([])
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([listPatients(), listTrials(), listMatches(), listRecruitment()])
-      .then(([nextPatients, nextTrials, nextMatches, nextRecruitment]) => {
+    Promise.all([listPatients(), listTrials(), listRecruitment()])
+      .then(([nextPatients, nextTrials, nextRecruitment]) => {
         setPatients(nextPatients)
         setTrials(nextTrials)
-        setMatches(nextMatches)
         setRecruitment(nextRecruitment)
       })
       .catch((err) => setError(err.message))
   }, [])
 
-  const potentialMatches = matches.filter((item) => item.eligible).length
-  const nearEligiblePatients = new Set(matches.filter((item) => item.near_eligible).map((item) => item.patient_id)).size
-  const contacted = recruitment.filter((item) => item.status === 'Contacted').length
-  const screened = recruitment.filter((item) => item.status === 'Screened').length
+  const applied = recruitment.filter((item) => item.status === 'Applied').length
+  const identified = recruitment.filter((item) => item.status === 'Identified').length
   const enrolled = recruitment.filter((item) => item.status === 'Enrolled').length
 
-  const pipeline = useMemo(() => {
+  const trialRows = useMemo(() => {
     return trials.map((trial) => {
       const rows = recruitment.filter((item) => item.trial_id === trial.trial_id)
-      const counts = Object.fromEntries(RECRUITMENT_STATUSES.map((status) => [status, rows.filter((item) => item.status === status).length]))
-      return { trial_id: trial.trial_id, title: trial.title, ...counts }
+      const counts = Object.fromEntries(
+        RECRUITMENT_STATUSES.map((status) => [status, rows.filter((item) => item.status === status).length]),
+      )
+      return { ...trial, ...counts }
     })
   }, [trials, recruitment])
 
-  const chartData = RECRUITMENT_STATUSES.map((status) => ({
-    status,
-    count: recruitment.filter((item) => item.status === status).length,
-  }))
-
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-      </div>
-
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
       {error ? <p className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p> : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <StatCard label="Patients" value={patients.length} />
-        <StatCard label="Potential matches" value={potentialMatches} />
-        <StatCard label="Near matches" value={nearEligiblePatients} />
-        <StatCard label="Contacted" value={contacted} />
-        <StatCard label="Screened" value={screened} />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <StatCard label="Trials" value={trials.length} />
+        <StatCard label="Participants" value={patients.length} />
+        <StatCard label="Applied" value={applied} />
+        <StatCard label="Identified" value={identified} />
         <StatCard label="Enrolled" value={enrolled} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-5">
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
-          <h2 className="font-semibold">Pipeline</h2>
-          <div className="mt-4 h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="status" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#0f766e" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold">By trial</h2>
-            <Link to="/settings" className="text-sm text-teal-700">
-              Data
-            </Link>
-          </div>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="text-slate-500">
-                <tr>
-                  <th className="pb-3">Trial</th>
-                  {RECRUITMENT_STATUSES.map((status) => (
-                    <th key={status} className="pb-3">
-                      {status}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {pipeline.map((row) => (
-                  <tr key={row.trial_id} className="border-t border-slate-100">
-                    <td className="py-3 font-medium">
-                      {row.trial_id}
-                      <div className="text-xs font-normal text-slate-500">{row.title}</div>
-                    </td>
-                    {RECRUITMENT_STATUSES.map((status) => (
-                      <td key={status}>{row[status]}</td>
-                    ))}
-                  </tr>
+      <section className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between px-4 py-4">
+          <h2 className="font-semibold">Trials</h2>
+          <Link to="/trials" className="text-sm text-teal-700">
+            Open
+          </Link>
+        </div>
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="bg-slate-50 text-slate-500">
+            <tr>
+              <th className="px-4 py-3">Trial</th>
+              {RECRUITMENT_STATUSES.map((status) => (
+                <th key={status} className="px-4 py-3">
+                  {status}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {trialRows.map((row) => (
+              <tr key={row.trial_id} className="border-t border-slate-100">
+                <td className="px-4 py-3">
+                  <Link className="font-medium text-teal-700" to={`/trials/${row.trial_id}`}>
+                    {row.trial_id}
+                  </Link>
+                  <div className="text-xs text-slate-500">{row.title}</div>
+                </td>
+                {RECRUITMENT_STATUSES.map((status) => (
+                  <td key={status} className="px-4 py-3">
+                    {row[status]}
+                  </td>
                 ))}
-                {!pipeline.length ? (
-                  <tr>
-                    <td colSpan={5} className="py-6 text-slate-500">
-                      No trials.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
+              </tr>
+            ))}
+            {!trialRows.length ? (
+              <tr>
+                <td colSpan={6} className="px-4 py-6 text-slate-500">
+                  No trials.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex items-center justify-between px-4 py-4">
+          <h2 className="font-semibold">Participants</h2>
+          <Link to="/patients" className="text-sm text-teal-700">
+            Open
+          </Link>
+        </div>
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="bg-slate-50 text-slate-500">
+            <tr>
+              <th className="px-4 py-3">ID</th>
+              <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Condition</th>
+              <th className="px-4 py-3">Source</th>
+              <th className="px-4 py-3">Applications</th>
+            </tr>
+          </thead>
+          <tbody>
+            {patients.map((patient) => {
+              const rows = recruitment.filter((item) => item.patient_id === patient.patient_id)
+              return (
+                <tr key={patient.patient_id} className="border-t border-slate-100">
+                  <td className="px-4 py-3">
+                    <Link className="font-medium text-teal-700" to={`/patients/${patient.patient_id}`}>
+                      {patient.patient_id}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">{patient.name || '—'}</td>
+                  <td className="px-4 py-3">{patient.condition}</td>
+                  <td className="px-4 py-3">{patient.source === 'self' ? 'Registered' : 'Added'}</td>
+                  <td className="px-4 py-3">
+                    {rows.length ? (
+                      <div className="flex flex-wrap gap-1">
+                        {rows.map((item) => (
+                          <StatusBadge key={item.trial_id} value={item.status} />
+                        ))}
+                      </div>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+            {!patients.length ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-6 text-slate-500">
+                  No participants.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </section>
     </div>
   )
 }

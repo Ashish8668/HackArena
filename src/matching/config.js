@@ -7,7 +7,7 @@ export const NEAR_ELIGIBILITY = {
   ageTolerance: 5,
 }
 
-export const RECRUITMENT_STATUSES = ['Identified', 'Contacted', 'Screened', 'Enrolled']
+export const RECRUITMENT_STATUSES = ['Applied', 'Identified', 'Contacted', 'Screened', 'Enrolled']
 
 export const GENDER_OPTIONS = ['Male', 'Female', 'Any']
 

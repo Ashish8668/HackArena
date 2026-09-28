@@ -5,8 +5,9 @@ import { getPatientByUid, isProfileComplete } from '../../firebase/patients'
 import { listMatchesForPatient } from '../../firebase/matches'
 import { listTrials } from '../../firebase/trials'
 import { listRecruitmentForPatient } from '../../firebase/recruitment'
-import { patientFacingLabel } from '../../matching/eligibilityEngine'
+import { isPotentialMatch, patientFacingLabel } from '../../matching/eligibilityEngine'
 import StatusBadge from '../../components/StatusBadge'
+import { applyToTrial } from '../../services/runMatching'
 
 export default function PatientHomePage() {
   const { user } = useAuth()
@@ -15,6 +16,7 @@ export default function PatientHomePage() {
   const [trials, setTrials] = useState([])
   const [recruitment, setRecruitment] = useState([])
   const [error, setError] = useState('')
+  const [applying, setApplying] = useState('')
 
   useEffect(() => {
     if (!user) return
@@ -27,12 +29,28 @@ export default function PatientHomePage() {
             listMatchesForPatient(nextPatient.patient_id),
             listRecruitmentForPatient(nextPatient.patient_id),
           ])
-          setMatches(nextMatches.filter((item) => item.eligible || item.near_eligible))
+          setMatches(nextMatches.filter(isPotentialMatch))
           setRecruitment(nextRecruitment)
         }
       })
       .catch((err) => setError(err.message))
   }, [user])
+
+  async function handleApply(trialId) {
+    setApplying(trialId)
+    setError('')
+    try {
+      await applyToTrial(patient, trialId)
+      setRecruitment((current) => {
+        const rest = current.filter((item) => !(item.patient_id === patient.patient_id && item.trial_id === trialId))
+        return [...rest, { patient_id: patient.patient_id, trial_id: trialId, status: 'Applied' }]
+      })
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setApplying('')
+    }
+  }
 
   if (!isProfileComplete(patient)) {
     return (
@@ -67,12 +85,21 @@ export default function PatientHomePage() {
             <ul className="mt-4 grid gap-2 text-sm text-slate-600 md:grid-cols-2">
               <li>Condition: {patient.condition}</li>
               <li>Trial condition: {trial?.condition}</li>
-              {status ? <li>Status: {status}</li> : null}
+              {status ? (
+                <li>
+                  Status: <StatusBadge value={status} />
+                </li>
+              ) : null}
             </ul>
-            {match.near_eligible && match.criteria_results?.hba1c?.status === 'FAIL' ? (
-              <p className="mt-3 text-sm text-amber-900">
-                HbA1c {match.criteria_results.hba1c.patient_value} (required {match.criteria_results.hba1c.required})
-              </p>
+            {!status ? (
+              <button
+                type="button"
+                disabled={applying === match.trial_id}
+                onClick={() => handleApply(match.trial_id)}
+                className="mt-4 rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+              >
+                {applying === match.trial_id ? 'Applying...' : 'Apply'}
+              </button>
             ) : null}
           </article>
         )

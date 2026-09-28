@@ -5,10 +5,11 @@ import {
   evaluateGender,
   evaluateHba1c,
   evaluateMedicine,
+  isPotentialMatch,
   overallLabel,
 } from '../matching/eligibilityEngine'
 import { evaluateNearEligibility } from '../matching/nearEligibility'
-import { canonicalizeCondition } from '../semantic/normalization'
+import { canonicalizeCondition, canonicalizeMedicine } from '../semantic/normalization'
 import { cosineSimilarity } from '../semantic/cosineSimilarity'
 import { validatePatient, validateTrial } from '../utils/validation'
 import { generateSyntheticPatients } from '../data/patients'
@@ -37,6 +38,9 @@ describe('deterministic eligibility rules', () => {
     expect(evaluateMedicine('Insulin', 'Insulin').status).toBe('FAIL')
     expect(evaluateMedicine('Insulin', 'insulin').status).toBe('FAIL')
     expect(evaluateMedicine('Metformin', 'None').status).toBe('PASS')
+    expect(evaluateMedicine('Metformin', 'Metformin HCl').status).toBe('FAIL')
+    expect(evaluateMedicine('Aspirin', 'acetylsalicylic acid').status).toBe('FAIL')
+    expect(evaluateMedicine('Aspirin', 'Insulin').status).toBe('PASS')
   })
 })
 
@@ -81,6 +85,9 @@ describe('near eligibility', () => {
     expect(near.failedCount).toBe(1)
     expect(overallLabel({ eligible: false, near_eligible: near.nearEligible })).toBe('NEAR MATCH')
     expect(overallLabel({ eligible: true, near_eligible: false })).toBe('POTENTIAL MATCH')
+    expect(isPotentialMatch({ eligible: true, near_eligible: false })).toBe(true)
+    expect(isPotentialMatch({ eligible: false, near_eligible: true })).toBe(true)
+    expect(isPotentialMatch({ eligible: false, near_eligible: false })).toBe(false)
   })
 
   it('does not treat excluded-medicine failures as near eligible', () => {
@@ -103,6 +110,14 @@ describe('condition normalization', () => {
     expect(canonicalizeCondition('Type II Diabetes')).toBe('type_2_diabetes')
     expect(canonicalizeCondition('HTN')).toBe(canonicalizeCondition('High Blood Pressure'))
     expect(canonicalizeCondition('COPD')).toBe(canonicalizeCondition('Chronic Obstructive Pulmonary Disease'))
+    expect(canonicalizeCondition('Type 2 diabetes')).toBe(canonicalizeCondition('T2DM'))
+  })
+})
+
+describe('medicine synonyms', () => {
+  it('maps salt and chemical names onto the same canonical medicine', () => {
+    expect(canonicalizeMedicine('Metformin')).toBe(canonicalizeMedicine('Metformin HCl'))
+    expect(canonicalizeMedicine('Aspirin')).toBe(canonicalizeMedicine('acetylsalicylic acid'))
   })
 })
 

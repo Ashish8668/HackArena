@@ -101,7 +101,7 @@ export default function PatientDetailsPage() {
             disabled={busy}
             className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
           >
-            {busy ? 'Matching trials...' : 'Refresh matching'}
+            {busy ? 'Matching...' : 'Match'}
           </button>
         </div>
       </div>

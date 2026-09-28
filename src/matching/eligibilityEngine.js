@@ -1,12 +1,12 @@
 import { SIMILARITY_THRESHOLD } from './config'
 import { evaluateNearEligibility } from './nearEligibility'
 import { semanticSimilarity } from '../semantic/embeddingService'
+import { canonicalizeMedicine } from '../semantic/normalization'
 
 function medicinesMatch(patientMedicine, excludedMedicine) {
-  const current = String(patientMedicine || '').trim().toLowerCase()
-  const excluded = String(excludedMedicine || '').trim().toLowerCase()
-  if (!excluded || excluded === 'none' || excluded === 'n/a') return false
-  return current === excluded
+  const excluded = canonicalizeMedicine(excludedMedicine)
+  if (!excluded) return false
+  return canonicalizeMedicine(patientMedicine) === excluded
 }
 
 export async function evaluateCondition(patientCondition, trialCondition, threshold = SIMILARITY_THRESHOLD) {
@@ -130,6 +130,10 @@ export function overallLabel(match) {
 
 export function patientFacingLabel(match) {
   if (match.eligible) return 'Potential Match'
-  if (match.near_eligible) return 'Close possible match'
+  if (match.near_eligible) return 'Potential Match'
   return 'Not a current match'
+}
+
+export function isPotentialMatch(match) {
+  return Boolean(match?.eligible || match?.near_eligible)
 }

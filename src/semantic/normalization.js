@@ -40,3 +40,49 @@ export function mapTerminology(value) {
 export function canonicalizeCondition(value) {
   return mapTerminology(normalizeText(value))
 }
+
+const MEDICINE_MAP = {
+  aspirin: 'acetylsalicylic_acid',
+  asa: 'acetylsalicylic_acid',
+  'acetylsalicylic acid': 'acetylsalicylic_acid',
+  'acetyl salicylic acid': 'acetylsalicylic_acid',
+  metformin: 'metformin',
+  glucophage: 'metformin',
+  insulin: 'insulin',
+  lantus: 'insulin',
+  humalog: 'insulin',
+  'insulin glargine': 'insulin',
+}
+
+const MEDICINE_IGNORE = new Set([
+  'hcl',
+  'hydrochloride',
+  'hydrobromide',
+  'sodium',
+  'potassium',
+  'calcium',
+  'xr',
+  'er',
+  'ir',
+  'sr',
+  'cr',
+  'tablet',
+  'tablets',
+  'tab',
+  'mg',
+])
+
+function stripMedicineExtras(text) {
+  return text
+    .split(/\s+/)
+    .filter((token) => token && !MEDICINE_IGNORE.has(token) && !/^\d+(\.\d+)?$/.test(token))
+    .join(' ')
+}
+
+export function canonicalizeMedicine(value) {
+  const normalized = stripMedicineExtras(normalizeText(value))
+  if (!normalized || normalized === 'none' || normalized === 'n a' || normalized === 'na') return ''
+  const mapped = MEDICINE_MAP[normalized] || MEDICINE_MAP[normalized.replace(/\s+/g, ' ')]
+  if (mapped) return mapped
+  return normalized.replace(/\s+/g, '_')
+}

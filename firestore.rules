@@ -42,7 +42,9 @@ service cloud.firestore {
 
     match /recruitment/{docId} {
       allow read: if isCoordinator() || (isSignedIn() && resource.data.patient_id == userData().patient_id);
-      allow write: if isCoordinator() || (isPatient() && request.resource.data.status == 'Identified' && request.resource.data.patient_id == userData().patient_id);
+      allow create: if isCoordinator() || (isPatient() && request.resource.data.status == 'Applied' && request.resource.data.patient_id == userData().patient_id);
+      allow update: if isCoordinator() || (isPatient() && resource.data.patient_id == userData().patient_id && resource.data.status == 'Applied' && request.resource.data.status == 'Applied');
+      allow delete: if isCoordinator();
     }
   }
 }

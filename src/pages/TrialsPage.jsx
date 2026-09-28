@@ -3,16 +3,21 @@ import { Link } from 'react-router-dom'
 import Modal from '../components/Modal'
 import TrialForm from '../components/TrialForm'
 import { deleteTrial, listTrials, upsertTrial } from '../firebase/trials'
+import { listRecruitment } from '../firebase/recruitment'
+import { RECRUITMENT_STATUSES } from '../matching/config'
 
 export default function TrialsPage() {
   const [trials, setTrials] = useState([])
+  const [recruitment, setRecruitment] = useState([])
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [error, setError] = useState('')
 
   async function refresh() {
-    setTrials(await listTrials())
+    const [nextTrials, nextRecruitment] = await Promise.all([listTrials(), listRecruitment()])
+    setTrials(nextTrials)
+    setRecruitment(nextRecruitment)
   }
 
   useEffect(() => {
@@ -77,6 +82,11 @@ export default function TrialsPage() {
               <th className="px-4 py-3">HbA1c</th>
               <th className="px-4 py-3">BMI</th>
               <th className="px-4 py-3">Excluded</th>
+              {RECRUITMENT_STATUSES.map((status) => (
+                <th key={status} className="px-4 py-3">
+                  {status}
+                </th>
+              ))}
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -99,6 +109,11 @@ export default function TrialsPage() {
                   {trial.min_bmi}-{trial.max_bmi}
                 </td>
                 <td className="px-4 py-3">{trial.excluded_medicine}</td>
+                {RECRUITMENT_STATUSES.map((status) => (
+                  <td key={status} className="px-4 py-3">
+                    {recruitment.filter((item) => item.trial_id === trial.trial_id && item.status === status).length}
+                  </td>
+                ))}
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     <button
