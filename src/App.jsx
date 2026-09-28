@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import ProtectedRoute, { CoordinatorRoute, PatientRoute } from './components/ProtectedRoute'
+import ProtectedRoute, { CoordinatorRoute, PatientRoute, AdminRoute } from './components/ProtectedRoute'
 import AppLayout, { PatientLayout } from './components/AppLayout'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
@@ -12,6 +12,8 @@ import TrialDetailsPage from './pages/TrialDetailsPage'
 import TrialSearchPage from './pages/TrialSearchPage'
 import RecruitmentPage from './pages/RecruitmentPage'
 import SettingsPage from './pages/SettingsPage'
+import EligibilityDecisionPage from './pages/EligibilityDecisionPage'
+import AdminPage from './pages/AdminPage'
 import PatientHomePage from './pages/patient/PatientHomePage'
 import PatientProfilePage from './pages/patient/PatientProfilePage'
 import { useAuth } from './hooks/useAuth'
@@ -57,12 +59,14 @@ export default function App() {
         <Route element={<CoordinatorRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/decision-paths" element={<EligibilityDecisionPage />} />
             <Route path="/patients" element={<PatientsPage />} />
             <Route path="/patients/:patientId" element={<PatientDetailsPage />} />
             <Route path="/trials" element={<TrialsPage />} />
             <Route path="/trials/:trialId" element={<TrialDetailsPage />} />
             <Route path="/search" element={<TrialSearchPage />} />
             <Route path="/recruitment" element={<RecruitmentPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
         </Route>

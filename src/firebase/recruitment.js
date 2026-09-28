@@ -1,39 +1,26 @@
 import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  where,
-} from 'firebase/firestore'
-import { db } from './config'
-import { matchDocumentId } from './matches'
+  storeListRecruitment,
+  storeGetRecruitment,
+  storeUpsertRecruitment,
+} from '../services/dataStore'
 
-const COLLECTION = 'recruitment'
+export function matchDocumentId(patientId, trialId) {
+  return `${patientId}_${trialId}`
+}
 
 export async function listRecruitment() {
-  const snapshot = await getDocs(collection(db, COLLECTION))
-  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
+  return storeListRecruitment()
 }
 
 export async function getRecruitment(patientId, trialId) {
-  const snapshot = await getDoc(doc(db, COLLECTION, matchDocumentId(patientId, trialId)))
-  if (!snapshot.exists()) return null
-  return { id: snapshot.id, ...snapshot.data() }
+  return storeGetRecruitment(patientId, trialId)
 }
 
 export async function listRecruitmentForPatient(patientId) {
-  const snapshot = await getDocs(query(collection(db, COLLECTION), where('patient_id', '==', patientId)))
-  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }))
+  const all = await storeListRecruitment()
+  return all.filter((r) => r.patient_id === patientId)
 }
 
-export async function upsertRecruitment({ patient_id, trial_id, status }) {
-  await setDoc(doc(db, COLLECTION, matchDocumentId(patient_id, trial_id)), {
-    patient_id,
-    trial_id,
-    status,
-    updatedAt: serverTimestamp(),
-  })
+export async function upsertRecruitment(record) {
+  return storeUpsertRecruitment(record)
 }
