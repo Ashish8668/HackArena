@@ -26,6 +26,7 @@ export async function getTrial(trialId) {
 export async function upsertTrial(trial) {
   const ref = doc(db, COLLECTION, trial.trial_id)
   const existing = await getDoc(ref)
+  const previous = existing.exists() ? existing.data() : {}
   await setDoc(
     ref,
     {
@@ -39,8 +40,9 @@ export async function upsertTrial(trial) {
       min_bmi: Number(trial.min_bmi),
       max_bmi: Number(trial.max_bmi),
       excluded_medicine: trial.excluded_medicine,
+      knowledge: trial.knowledge != null ? String(trial.knowledge) : previous.knowledge || '',
       updatedAt: serverTimestamp(),
-      createdAt: existing.exists() ? existing.data().createdAt : serverTimestamp(),
+      createdAt: existing.exists() ? previous.createdAt : serverTimestamp(),
     },
     { merge: true },
   )

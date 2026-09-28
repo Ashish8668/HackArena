@@ -1,0 +1,3 @@
+trial_id,title,condition,min_age,max_age,gender,max_hba1c,min_bmi,max_bmi,excluded_medicine,knowledge
+T013,Type 2 Diabetes Drug Trial,T2DM,30,65,Any,8.0,18,35,Insulin,Phase 3 trial evaluating efficacy and safety of a novel oral hypoglycemic agent in adults with poorly controlled Type 2 Diabetes Mellitus.
+T007,Intensive Glucose Control Study,Type 2 Diabetes Mellitus,40,70,Any,9.0,20,40,Insulin,An observational study comparing standard versus intensive glycemic control strategies for preventing microvascular complications in patients with long-standing Type 2 Diabetes.

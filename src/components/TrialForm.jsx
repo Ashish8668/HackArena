@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { saveLocalKnowledge } from '../ask/localKnowledge'
 import Field, { inputClass } from './Field'
 import { GENDER_OPTIONS } from '../matching/config'
 import { validateTrial } from '../utils/validation'
@@ -14,6 +15,7 @@ const emptyTrial = {
   min_bmi: '',
   max_bmi: '',
   excluded_medicine: 'None',
+  knowledge: '',
 }
 
 export default function TrialForm({ initialValue, onSubmit, submitLabel, lockId }) {
@@ -68,6 +70,28 @@ export default function TrialForm({ initialValue, onSubmit, submitLabel, lockId 
       <Field label="Excluded Medicine" error={errors.excluded_medicine}>
         <input className={inputClass} value={values.excluded_medicine} onChange={(e) => update('excluded_medicine', e.target.value)} />
       </Field>
+      <div className="md:col-span-2">
+        <Field label="Knowledge">
+          <textarea
+            className={`${inputClass} min-h-28`}
+            value={values.knowledge || ''}
+            onChange={(e) => update('knowledge', e.target.value)}
+          />
+        </Field>
+        <input
+          className="mt-2 text-sm"
+          type="file"
+          accept=".txt,.md,.csv"
+          onChange={async (event) => {
+            const file = event.target.files?.[0]
+            if (!file) return
+            const text = await file.text()
+            update('knowledge', text)
+            if (values.trial_id) saveLocalKnowledge(values.trial_id, text, file.name)
+            event.target.value = ''
+          }}
+        />
+      </div>
       <div className="md:col-span-2">
         <button type="submit" className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800">
           {submitLabel}

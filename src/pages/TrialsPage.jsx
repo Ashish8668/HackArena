@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Modal from '../components/Modal'
 import TrialForm from '../components/TrialForm'
+import { saveLocalKnowledge, mergeTrialKnowledge } from '../ask/localKnowledge'
 import { deleteTrial, listTrials, upsertTrial } from '../firebase/trials'
 import { listRecruitment } from '../firebase/recruitment'
 import { RECRUITMENT_STATUSES } from '../matching/config'
@@ -16,7 +17,7 @@ export default function TrialsPage() {
 
   async function refresh() {
     const [nextTrials, nextRecruitment] = await Promise.all([listTrials(), listRecruitment()])
-    setTrials(nextTrials)
+    setTrials(nextTrials.map(mergeTrialKnowledge))
     setRecruitment(nextRecruitment)
   }
 
@@ -32,10 +33,15 @@ export default function TrialsPage() {
   }, [trials, search])
 
   async function handleSave(values) {
-    await upsertTrial(values)
-    setOpen(false)
-    setEditing(null)
-    await refresh()
+    try {
+      saveLocalKnowledge(values.trial_id, values.knowledge || '', 'form')
+      await upsertTrial(values)
+      setOpen(false)
+      setEditing(null)
+      await refresh()
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   async function handleDelete(trialId) {

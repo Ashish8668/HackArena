@@ -3,6 +3,7 @@ import { seedSyntheticDataset, uploadSourceFile } from '../firebase/seed'
 import { parsePatientCsv, parseTrialCsv } from '../utils/csv'
 import { upsertPatient } from '../firebase/patients'
 import { upsertTrial } from '../firebase/trials'
+import { saveLocalKnowledge } from '../ask/localKnowledge'
 
 export default function SettingsPage() {
   const [message, setMessage] = useState('')
@@ -27,12 +28,17 @@ export default function SettingsPage() {
     setBusy(true)
     setMessage('')
     try {
-      await uploadSourceFile(file).catch(() => null)
+      uploadSourceFile(file).catch(console.error) // Do not await, Firebase Storage can hang indefinitely on CORS issues
       const parsed = kind === 'patients' ? await parsePatientCsv(file) : await parseTrialCsv(file)
       if (kind === 'patients') {
         await Promise.all(parsed.valid.map((record) => upsertPatient(record)))
       } else {
-        await Promise.all(parsed.valid.map((record) => upsertTrial(record)))
+        await Promise.all(
+          parsed.valid.map((record) => {
+            if (record.knowledge) saveLocalKnowledge(record.trial_id, record.knowledge, file.name)
+            return upsertTrial(record)
+          }),
+        )
       }
       setMessage(`Imported ${parsed.valid.length} ${kind}. Skipped ${parsed.invalid.length}.`)
     } catch (error) {

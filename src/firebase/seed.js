@@ -3,6 +3,7 @@ import { ref, uploadBytes } from 'firebase/storage'
 import { db, storage } from './config'
 import { SYNTHETIC_TRIALS } from '../data/trials'
 import { generateSyntheticPatients } from '../data/patients'
+import { defaultKnowledgeText } from '../ask/trialKnowledge'
 
 async function commitInChunks(records, collectionName, idField) {
   const chunkSize = 400
@@ -22,7 +23,11 @@ async function commitInChunks(records, collectionName, idField) {
 
 export async function seedSyntheticDataset() {
   const patients = generateSyntheticPatients()
-  await commitInChunks(SYNTHETIC_TRIALS, 'trials', 'trial_id')
+  const trials = SYNTHETIC_TRIALS.map((trial) => ({
+    ...trial,
+    knowledge: trial.knowledge || defaultKnowledgeText(trial.trial_id),
+  }))
+  await commitInChunks(trials, 'trials', 'trial_id')
   await commitInChunks(patients, 'patients', 'patient_id')
   return { trialCount: SYNTHETIC_TRIALS.length, patientCount: patients.length }
 }

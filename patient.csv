@@ -1,0 +1,7 @@
+patient_id,name,email,age,gender,condition,hba1c,bmi,current_medicine
+P001,John Doe,john@example.com,45,Male,Type 2 Diabetes,7.5,28,Metformin
+P002,Jane Smith,jane@example.com,32,Female,High Blood Pressure,5.5,22,None
+P003,Bob Johnson,bob@example.com,55,Male,Obesity,6.8,38,None
+P004,Alice Brown,alice@example.com,60,Female,Heart Failure,7.0,30,Lisinopril
+P005,Tom Wilson,tom@example.com,42,Male,COPD,6.2,25,Albuterol
+P006,Sarah Davis,sarah@example.com,35,Female,T2DM,8.2,32,Insulin

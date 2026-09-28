@@ -8,6 +8,9 @@ import { listRecruitmentForPatient } from '../../firebase/recruitment'
 import { isPotentialMatch, patientFacingLabel } from '../../matching/eligibilityEngine'
 import StatusBadge from '../../components/StatusBadge'
 import { applyToTrial } from '../../services/runMatching'
+import TrialAsk from '../../components/TrialAsk'
+import { mergeTrialKnowledge } from '../../ask/localKnowledge'
+import { defaultKnowledgeText } from '../../ask/trialKnowledge'
 
 export default function PatientHomePage() {
   const { user } = useAuth()
@@ -23,7 +26,15 @@ export default function PatientHomePage() {
     Promise.all([getPatientByUid(user.uid), listTrials()])
       .then(async ([nextPatient, nextTrials]) => {
         setPatient(nextPatient)
-        setTrials(nextTrials)
+        setTrials(
+          nextTrials.map((trial) => {
+            const merged = mergeTrialKnowledge(trial)
+            return {
+              ...merged,
+              knowledge: merged.knowledge || defaultKnowledgeText(trial.trial_id),
+            }
+          }),
+        )
         if (nextPatient) {
           const [nextMatches, nextRecruitment] = await Promise.all([
             listMatchesForPatient(nextPatient.patient_id),
@@ -101,6 +112,7 @@ export default function PatientHomePage() {
                 {applying === match.trial_id ? 'Applying...' : 'Apply'}
               </button>
             ) : null}
+            <TrialAsk trial={trial} />
           </article>
         )
       })}

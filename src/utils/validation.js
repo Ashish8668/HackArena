@@ -72,4 +72,5 @@ export const TRIAL_FIELDS = [
   'min_bmi',
   'max_bmi',
   'excluded_medicine',
+  'knowledge',
 ]

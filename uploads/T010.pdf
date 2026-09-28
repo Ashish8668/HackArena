@@ -1,0 +1,149 @@
+%PDF-1.4
+1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
+2 0 obj << /Type /Pages /Kids [3 0 R 4 0 R 5 0 R] /Count 3 >> endobj
+3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 9 0 R >> >> >> endobj
+4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 7 0 R /Resources << /Font << /F1 9 0 R >> >> >> endobj
+5 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 8 0 R /Resources << /Font << /F1 9 0 R >> >> >> endobj
+6 0 obj << /Length 1633 >> stream
+BT /F1 11 Tf 50 770 Td 14 TL
+(PROTOCOL T010) Tj T*
+() Tj T*
+(CKD Progression Study) Tj T*
+() Tj T*
+(Version 1.0. Summary for recruitment matching. Not a medical diagnosis.) Tj T*
+() Tj T*
+(1. BACKGROUND) Tj T*
+() Tj T*
+(T010 studies people with Chronic kidney disease \(CKD\). The study question is kidney labs) Tj T*
+(and medicine review.) Tj T*
+() Tj T*
+(Sites keep usual clinic care unless the protocol names a change. Coordinators record) Tj T*
+(visits and safety events.) Tj T*
+() Tj T*
+(This document is long so retrieval can split background, criteria, visits, and safety) Tj T*
+(into separate chunks.) Tj T*
+() Tj T*
+(2. OBJECTIVES) Tj T*
+() Tj T*
+(Primary: describe recruitment for CKD Progression Study using structured age, gender,) Tj T*
+(condition, HbA1c, BMI, and excluded medicine.) Tj T*
+() Tj T*
+(Secondary: count screening visits, contact attempts, and reasons a person does not) Tj T*
+(continue.) Tj T*
+() Tj T*
+(The matching engine does not decide medical eligibility. Screening remains with the) Tj T*
+(study team.) Tj T*
+() Tj T*
+(3. POPULATION) Tj T*
+() Tj T*
+(Condition of interest: Chronic kidney disease \(CKD\).) Tj T*
+() Tj T*
+(Age inclusion: 30 to 70 years at consent.) Tj T*
+() Tj T*
+(Gender inclusion: Any. If Any, male and female may be listed.) Tj T*
+() Tj T*
+(HbA1c maximum allowed in the structured record: 8.5.) Tj T*
+() Tj T*
+(BMI inclusion window: 18 to 38.) Tj T*
+() Tj T*
+(People outside these numeric windows are not a potential match in the app, except a near) Tj T*
+(miss on one numeric field.) Tj T*
+() Tj T*
+(4. EXCLUSIONS) Tj T*
+() Tj T*
+(Excluded medicine for T010: Ibuprofen.) Tj T*
+ET
+endstream endobj
+7 0 obj << /Length 1764 >> stream
+BT /F1 11 Tf 50 770 Td 14 TL
+() Tj T*
+(If current medicine canonicalizes to Ibuprofen, the medicine criterion fails and the) Tj T*
+(trial is not shown as a potential match.) Tj T*
+() Tj T*
+(Salt names such as hydrochloride are stripped before that compare. This section is only) Tj T*
+(about medicine exclusion.) Tj T*
+() Tj T*
+(Pregnancy, inability to attend visits, and missing contact details are recorded by the) Tj T*
+(coordinator, not by the matching score.) Tj T*
+() Tj T*
+(5. VISIT SCHEDULE) Tj T*
+() Tj T*
+(Visit 0: phone or clinic pre-screen. Confirm identity and the trial identifier.) Tj T*
+() Tj T*
+(Visit 1: screening labs and consent discussion. No result in this file is a diagnosis.) Tj T*
+() Tj T*
+(Visit 2: baseline measures for the condition named above.) Tj T*
+() Tj T*
+(Visit 3: week 4 safety check.) Tj T*
+() Tj T*
+(Visit 4: week 12 primary follow-up.) Tj T*
+() Tj T*
+(Visit 5: end of study or early exit. Missed visits are logged in recruitment status) Tj T*
+(notes.) Tj T*
+() Tj T*
+(For T010, visit work follows kidney labs and medicine review.) Tj T*
+() Tj T*
+(6. ASSESSMENTS) Tj T*
+() Tj T*
+(Condition review each visit for Chronic kidney disease \(CKD\).) Tj T*
+() Tj T*
+(Age is not re-scored after matching unless the coordinator edits the patient record.) Tj T*
+() Tj T*
+(HbA1c is compared with the trial maximum 8.5 only in the structured engine.) Tj T*
+() Tj T*
+(BMI is compared with 18 to 38.) Tj T*
+() Tj T*
+(Ask answers must come from this protocol. Do not invent doses, brands, or extra) Tj T*
+(hospitals.) Tj T*
+() Tj T*
+(7. SAFETY) Tj T*
+() Tj T*
+(Adverse events are reported to the coordinator. This PDF does not list emergency) Tj T*
+(treatments.) Tj T*
+() Tj T*
+(People on Ibuprofen stay out of matching for T010.) Tj T*
+ET
+endstream endobj
+8 0 obj << /Length 772 >> stream
+BT /F1 11 Tf 50 770 Td 14 TL
+() Tj T*
+(Device or inhaler issues, if any, are written in the visit note, not in the matching) Tj T*
+(engine.) Tj T*
+() Tj T*
+(8. DATA AND ASK) Tj T*
+() Tj T*
+(Participant Ask may use this file as knowledge. The model may only restate text that) Tj T*
+(appears here.) Tj T*
+() Tj T*
+(Trial id to cite: T010. Title to cite: CKD Progression Study.) Tj T*
+() Tj T*
+(Recruitment statuses after apply: Applied, Identified, Contacted, Screened, Enrolled.) Tj T*
+() Tj T*
+(9. ADMINISTRATIVE) Tj T*
+() Tj T*
+(Sponsor file name: T010.pdf. Store under uploads and public/uploads.) Tj T*
+() Tj T*
+(Chunking demo: background, population, exclusions, and visits should land in different) Tj T*
+(chunks.) Tj T*
+() Tj T*
+(End of protocol.) Tj T*
+() Tj T*
+ET
+endstream endobj
+9 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000253 00000 n 
+0000000379 00000 n 
+0000000505 00000 n 
+0000002190 00000 n 
+0000004006 00000 n 
+0000004829 00000 n 
+trailer << /Size 10 /Root 1 0 R >>
+startxref
+4899
+%%EOF
